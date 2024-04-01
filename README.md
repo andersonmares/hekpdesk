@@ -1,60 +1,59 @@
+# Help Desk
 
-# Help Center Hub
+## Sobre o projeto
+O Help Desk é um sistema desenvolvido como parte de um desafio de desenvolvimento de software. Este sistema permite que os usuários façam login para abrir tickets e avaliar o atendimento recebido. Os operadores podem fazer login no sistema para oferecer suporte aos usuários, receber atualizações em tempo real sobre os tickets solicitados e encerrar serviços. Os tickets podem ser listados com paginação e filtrados por assunto ou ID.
 
-## About the Project
-The Help Center Hub is a help desk developed as part of a software development challenge. This system allows users to log in to open tickets and rate the service received. Operators can log into the system to support users, receive real-time updates on requested tickets, and close services. Tickets can be listed with pagination and filtered by subject or ID.
+## Tecnologias usadas
+- **Back-end:** Java 17, Spring Boot 3
+- **Frontend:** Angular 17 (autônomo: verdadeiro)
+- **Banco de dados:** PostgreSQL 16
+- **Autenticação:** OAuth2.0 com autenticação do Google
+- **Comunicação em tempo real:** SSE (eventos enviados pelo servidor)
+- **Documentação da API:** Swagger
 
-## Technologies Used
-- **Backend:** Java 17, Spring Boot 3
-- **Frontend:** Angular 17 (standalone: true)
-- **Database:** PostgreSQL 16
-- **Authentication:** OAuth2.0 with Google authentication
-- **Real-Time Communication:** SSE (Server-Sent Events)
-- **API Documentation:** Swagger
+## Estrutura do Projeto
+- **Backend:** Localizado no diretório `backend`, utilizando Clean Architecture com as entidades User, Ticket, TicketFeedback, TicketUpdate.
+- **Frontend:** No diretório `frontend`, construído com Angular 17 em modo autônomo.
+- **Banco de dados:** Utiliza PostgreSQL 16, com tabelas sendo criadas automaticamente quando o serviço é iniciado através do Docker.
 
-## Project Structure
-- **Backend:** Located in the `backend` directory, using Clean Architecture with the entities User, Ticket, TicketFeedback, TicketUpdate.
-- **Frontend:** In the `frontend` directory, built with Angular 17 in standalone mode.
-- **Database:** Uses PostgreSQL 16, with tables being automatically created when the service is started through Docker.
+## Ambiente DevOps e Kubernetes
+O arquivo `diagrama.png` ilustra como a plataforma Help Desk funciona em um ambiente DevOps utilizando Kubernetes. Mostra a estrutura dos sistemas e como eles são implantados e gerenciados para garantir escalabilidade e confiabilidade.
 
-## DevOps Environment & Kubernetes
-The `diagrama.png` file illustrates how the Help Center Hub platform functions within a DevOps environment utilizing Kubernetes. It shows the structure of the systems and how they are deployed and managed to ensure scalability and reliability.
+## Executando o projeto com Docker
+Este projeto está configurado para ser executado facilmente usando Docker e Docker Compose. Para fazer isso, certifique-se de ter o Docker e o Docker Compose instalados em seu sistema.
 
-## Running the Project with Docker
-This project is configured to be easily run using Docker and Docker Compose. To do this, make sure you have Docker and Docker Compose installed on your system.
+1. Clone o repositório em sua máquina local.
+2. Navegue até a pasta raiz do projeto.
+3. Execute o comando: `docker-compose up --build`.
+     - Este comando construirá as imagens necessárias para backend, frontend e banco de dados e iniciará os serviços.
+4. Após o início dos serviços, o frontend estará acessível via `http://localhost:4200` e o backend através de `http://localhost:8080`.
+5. A documentação da API pode ser acessada via Swagger em `http://localhost:8080/swagger-ui.html`.
 
-1. Clone the repository to your local machine.
-2. Navigate to the root folder of the project.
-3. Run the command: `docker-compose up --build`.
-    - This command will build the necessary images for the backend, frontend, and database, and will start the services.
-4. After the services start, the frontend will be accessible via `http://localhost:4200` and the backend through `http://localhost:8080`.
-5. The API documentation can be accessed via Swagger at `http://localhost:8080/swagger-ui.html`.
+## Autenticação
+- Para usuários regulares: a autenticação é realizada através do processo padrão Google OAuth2.0.
+- Para usuários do tipo gerente: É necessário cadastrar diretamente no banco de dados o mesmo e-mail utilizado com o Google. Isso é necessário para autenticar e acessar funcionalidades específicas do gerente no sistema.
 
-## Authentication
-- For regular users: Authentication is performed via the standard Google OAuth2.0 process.
-- For manager-type users: It is necessary to directly register the same email used with Google into the database. This is required to authenticate and access manager-specific functionalities within the system.
+## Etapas do pipeline de CI/CD
+O pipeline CI/CD, definido no arquivo `.gitlab-ci.yml`, automatiza o processo de execução de testes e preparação do aplicativo para implantação. O pipeline inclui as seguintes etapas:
 
-## CI/CD Pipeline Steps
-The CI/CD pipeline, defined in the `.gitlab-ci.yml` file, automates the process of running tests and preparing the application for deployment. The pipeline includes the following steps:
+1. **Instalação de dependência:**
+    - Instala todas as dependências necessárias para as partes backend e frontend do projeto.
 
-1. **Dependency Installation:**
-   - Installs all the necessary dependencies for both the backend and frontend parts of the project.
+2. **Teste de Unidade:**
+    - Executa testes unitários para validar a integridade e confiabilidade do código tanto para backend quanto para frontend.
+    - Garante que as novas alterações não quebrem as funcionalidades existentes.
 
-2. **Unit Testing:**
-   - Executes unit tests to validate the integrity and reliability of the code for both backend and frontend.
-   - Ensures that the new changes do not break existing functionalities.
+3. **Construir:**
+    - Compila o código-fonte do backend em um arquivo executável `api.jar`.
+    - Prepara o front-end para implantação executando o processo de construção.
 
-3. **Build:**
-   - Compiles the backend source code into an executable `api.jar` file.
-   - Prepares the frontend for deployment by running the build process.
-
-4. **Artifact Storage:**
-   - After a successful build and test run, the `api.jar` file is stored as a downloadable artifact within GitLab.
-   - The `api.jar` can be downloaded from the 'Jobs' page of the CI/CD pipeline in GitLab. Look for the latest successful build job with artifacts and download the `api.jar` from there.
+4. **Armazenamento de artefatos:**
+    - Após uma compilação e execução de teste bem-sucedidas, o arquivo `api.jar` é armazenado como um artefato para download no GitLab.
+    - O `api.jar` pode ser baixado da página 'Jobs' do pipeline CI/CD no GitLab. Procure o último trabalho de construção bem-sucedido com artefatos e baixe o `api.jar` de lá.
 
 
-## Real-Time Communication
-The backend uses SSE to communicate real-time updates to the frontend. This is especially useful for operators to follow tickets in real time.
+## Comunicação em tempo real
+O backend usa SSE para comunicar atualizações em tempo real ao frontend. Isto é especialmente útil para os operadores acompanharem os tickets em tempo real.
 
-## Contributions
-Contributions are always welcome! To contribute, please fork the repository, make your changes, and submit a pull request.
+## Contribuições
+Contribuições são sempre bem-vindas! Para contribuir, bifurque o repositório, faça suas alterações e envie uma solicitação pull.
