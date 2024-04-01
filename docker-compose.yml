@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  app:
+    container_name: helpdesk_app
+    build:
+      context: ./backend/helpdesk/
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresqldb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresqldb:5432/helpdesk
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+
+  postgresqldb:
+    container_name: postgres_16
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: helpdesk
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  angular:
+    container_name: helpdesk_angular
+    build:
+      context: ./frontend/helpdesk/
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    depends_on:
+      - app
+
+volumes:
+  db-data:
